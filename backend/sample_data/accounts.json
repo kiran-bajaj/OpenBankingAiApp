@@ -1,0 +1,16 @@
+[
+  {
+    "account_id": "acc_1",
+    "account_name": "Everyday Account",
+    "account_type": "transaction",
+    "currency": "NZD",
+    "provider": "mock"
+  },
+  {
+    "account_id": "acc_2",
+    "account_name": "Savings Account",
+    "account_type": "savings",
+    "currency": "NZD",
+    "provider": "mock"
+  }
+]

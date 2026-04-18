@@ -1,0 +1,16 @@
+[
+  {
+    "account_id": "acc_1",
+    "account_name": "Everyday Account",
+    "currency": "NZD",
+    "available": 1850.25,
+    "current": 1850.25
+  },
+  {
+    "account_id": "acc_2",
+    "account_name": "Savings Account",
+    "currency": "NZD",
+    "available": 8420.00,
+    "current": 8420.00
+  }
+]
