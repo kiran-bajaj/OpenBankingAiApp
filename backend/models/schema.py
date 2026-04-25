@@ -21,6 +21,9 @@ class Balance(BaseModel):
 
 
 class Transaction(BaseModel):
+    # provider_transaction_id: Akahu's stable _id (or None for mock/unknown).
+    # Used as the primary dedupe key when present — avoids hash collisions.
+    provider_transaction_id: Optional[str] = None
     account_id: str
     account_name: str
     currency: str

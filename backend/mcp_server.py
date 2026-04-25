@@ -26,6 +26,7 @@ Tools available:
   GET /tools                      → tool registry (list all tools)
 """
 import logging
+from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Query
@@ -45,6 +46,18 @@ from services.analytics import (
     top_merchants_tool,
 )
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Initialize the DB on startup. Non-fatal if DB is unavailable."""
+    try:
+        init_db()
+        log.info("MCP analytics server: DB ready")
+    except Exception as e:
+        log.warning("DB not available at startup: %s", e)
+    yield
+
+
 mcp_app = FastAPI(
     title="NZ Open Banking — MCP Analytics Server",
     description=(
@@ -53,6 +66,7 @@ mcp_app = FastAPI(
         "Run POST /sync on the main API (port 8000) before querying."
     ),
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 mcp_app.add_middleware(
@@ -61,15 +75,6 @@ mcp_app.add_middleware(
     allow_methods=["GET"],
     allow_headers=["Content-Type"],
 )
-
-
-@mcp_app.on_event("startup")
-def startup() -> None:
-    try:
-        init_db()
-        log.info("MCP analytics server: DB ready")
-    except Exception as e:
-        log.warning("DB not available at startup: %s", e)
 
 
 # ── Health ─────────────────────────────────────────────────────────────────────

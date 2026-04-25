@@ -96,6 +96,10 @@ def normalize_balance(raw: dict) -> Balance:
 def normalize_transaction(raw: dict) -> Transaction:
     """
     Map a raw Akahu transaction object to the internal Transaction schema.
+
+    provider_transaction_id is set from Akahu's stable '_id' field — this
+    becomes the dedupe key in the DB and prevents duplicate rows on re-sync.
+
     TODO: Confirm 'merchant.name' path and debit_credit heuristic against Akahu docs.
     """
     amount_raw = raw.get("amount", 0.0)
@@ -119,6 +123,7 @@ def normalize_transaction(raw: dict) -> Transaction:
     date = date_raw[:10] if date_raw else ""
 
     return Transaction(
+        provider_transaction_id=raw.get("_id") or None,
         account_id=raw.get("_account", "unknown"),
         account_name="",  # populated by caller after account lookup
         currency=raw.get("currency", "NZD"),

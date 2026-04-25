@@ -90,6 +90,15 @@ export default function AIInsights() {
 
         {insights && d && (
           <>
+            {/* Data source badge — shows whether insights came from DB or live provider */}
+            <div className={`insights-source-badge ${insights.data_source}`}>
+              {insights.data_source === "db" ? (
+                <>🗄️ Insights from <strong>persisted database</strong></>
+              ) : (
+                <>⚡ Insights from <strong>live provider</strong> — click <strong>Sync &amp; Save</strong> on the Transactions tab to persist</>
+              )}
+            </div>
+
             {/* Deterministic summary strip */}
             <div className="stats-strip">
               <div className="stat">

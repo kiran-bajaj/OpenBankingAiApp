@@ -2,22 +2,28 @@
 Database engine, session factory, and lifecycle helpers.
 
 DATABASE_URL controls the backend:
-  sqlite:///./openbanking.db                               (default, zero setup)
-  postgresql://postgres:postgres@localhost:5432/openbanking (production-like)
+  postgresql://postgres:postgres@localhost:5432/openbanking  (default)
+  sqlite:///./openbanking.db                                 (zero-setup fallback)
 
 The rest of the app is dialect-agnostic — switching is a single env-var change.
+
+load_dotenv() is called here so this module is safe to import standalone
+(e.g. mcp_server.py, tests) without the caller needing to load .env first.
 """
 import logging
 import os
 
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
+
+load_dotenv()  # idempotent — safe to call multiple times
 
 log = logging.getLogger(__name__)
 
 DATABASE_URL: str = os.getenv(
     "DATABASE_URL",
-    "sqlite:///./openbanking.db",
+    "postgresql://postgres:postgres@localhost:5432/openbanking",
 )
 
 # SQLite needs check_same_thread=False; PostgreSQL needs pool settings.
